@@ -10,20 +10,25 @@
 */
 
 #include<iostream.h>
+//for basic input/output (cin,cout)
+
 #include<fstream.h>
+//for Data file handling for doctors and patients
+
 #include<conio.h>
 #include<stdio.h>
 #include<string.h>
-
+#define nl '\n'
+//for smooth I/O operations
 
 class Feedback
 {
 
  public:
 
-  char Grade;
-  char Remarks[100];	        	//For additional remarks on
-  //void initGrade();                   //staff and doctors
+  char Grade;                           //For additional remarks on
+  char Remarks[50];	        	//staff and doctors
+  //void initGrade();
   //void giveRemarks(char []);
   //void giveGrade(char);
 
@@ -40,8 +45,21 @@ class Feedback
   void writeRemarks()			//Write remarks in binary file
   {
     fstream ff;
-    ff.open("Remarks.dat",ios::in|ios::out|ios::app);
+    ff.open("Remarks.dat",ios::in|ios::out|ios::ate);
+    ff.seekg(0);
     ff.write((char *)&Remarks,sizeof(Remarks));
+  }
+
+  //void
+
+  void giveGrade(char g)
+  {
+    Grade = g;
+  }
+
+  void showGrade()
+  {
+    cout<<Grade<<nl;
   }
 
 };
@@ -50,25 +68,89 @@ class Feedback
 class In_Patient_Dept : public Feedback //For In-Patients
 {
 
-  char Doctors[10][20];
-
+  char Doctors[10];			//Will temporary store doctors'
+  int availableBeds;                    //names in this variable
+  int patientCounter;
 
  public:
 
+  In_Patient_Dept()    			//Constructor for IPD Data
+  {
+    availableBeds =  50;
+    patientCounter = 0;
+  }
+
   void setDoctors()
+  {
+    char ch = 'y';
+    int i = 0;
+    fstream ff;
+    ff.open("Doctors.dat",ios::in|ios::out|ios::ate);
+    ff.seekg(0);
+    cout<<"Enter doctor's name: ";
+    gets(Doctor[i++]);
+    ff.write((char *)&Doctors,sizeof(Doctors));		//Store as you input
+    cout<<"Are there more doctors? (y/n): ";
+    cin>>ch;
+    while(ch == 'y' || ch == 'Y')
+    {
+      if(i == 10)                       //No more slots available
+      {                                 //for more doctors
+	cout<<"No more slots available for more doctors."<<nl;
+	break;
+      }
+      cout<<"Enter doctor's name: ";
+      gets(Doctor[i++]);
+      ff.write((char *)&Doctors,sizeof(Doctors));
+      cout<<"Are there more doctors? (y/n): ";
+      cin>>ch;
+    }
+    cout<<"All doctors initialised. Initialising the list.\n...";
+    ff.close();
+    delay(2000);
+    cout<<"Initialisation done.\n";
+  }
+
+  void showDoctors()
+  {
+    fstream ff;
+    ff.open("Doctors.dat",ios::in|ios::out);
+    while(ff)
+    {
+      ff.read((char *)&Doctors,sizeof(Doctors));
+      puts(Doctors);
+      cout<<nl;
+    }
+  }
+
+  bool newPatient()                     //returns true if a bed is
+  {                                     //available for new patient
+    if(!availableBeds)                  //else, return false
+    {
+      cout<<"No beds available!"<<nl;
+      return false;
+    }
+    else
+    {
+      ++patientCounter;
+      --availableBeds;
+      return true;
+    }
+  }
 
 }ipd;
 
-
 void bars()
 {
-  for(int i=0;i<79;i++) cout<<"=";
+  for(int i=0;i<80;i++) cout<<"=";
 }
 
+//Driver function below
 
 int main()
 {
   clrscr();
+  bars();
   getch();
   return 0;
 }
