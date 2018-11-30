@@ -105,9 +105,13 @@ class In_Patient_Dept : public Feedback //For In-Patients
       cout<<"Are there more doctors? (y/n): ";
       cin>>ch;
     }
-    cout<<"All doctors initialised. Initialising the list.\n...";
+    cout<<"All doctors initialised. Initialising the list.\n";
     ff.close();
-    delay(2000);
+    for(int i=0;i<4;i++)
+    {
+       cout<<".";                   //for visualisation purposes
+       delay(1000);
+    }
     cout<<"Initialisation done.\n";
   }
 
@@ -145,7 +149,7 @@ void bars()
   for(int i=0;i<80;i++) cout<<"=";
 }
 
-//Driver function below
+//Driver code below
 
 int main()
 {
