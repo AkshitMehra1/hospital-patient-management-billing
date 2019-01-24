@@ -39,18 +39,16 @@ class Feedback
 
   void giveRemarks(char s[])     	//Set Remarks for staff and doctors
   {
-    strcpy(Remarks,s);
+    strcpy(Remarks, s);
   }
 
   void writeRemarks()			//Write remarks in binary file
   {
     fstream ff;
-    ff.open("Remarks.dat",ios::in|ios::out|ios::ate);
+    ff.open("Remarks.dat", ios::in|ios::out|ios::ate);
     ff.seekg(0);
-    ff.write((char *)&Remarks,sizeof(Remarks));
+    ff.write((char *) &Remarks, sizeof(Remarks));
   }
-
-  //void
 
   void giveGrade(char g)
   {
@@ -59,7 +57,7 @@ class Feedback
 
   void showGrade()
   {
-    cout<<Grade<<nl;
+    cout << Grade << nl;
   }
 
 };
@@ -85,53 +83,53 @@ class In_Patient_Dept : public Feedback //For In-Patients
     char ch = 'y';
     int i = 0;
     fstream ff;
-    ff.open("Doctors.dat",ios::in|ios::out|ios::ate);
+    ff.open("Doctors.dat", ios::in|ios::out|ios::ate);
     ff.seekg(0);
-    cout<<"Enter doctor's name: ";
+    cout << "Enter doctor's name: ";
     gets(Doctor[i++]);
-    ff.write((char *)&Doctors,sizeof(Doctors));		//Store as you input
-    cout<<"Are there more doctors? (y/n): ";
-    cin>>ch;
+    ff.write((char *) &Doctors, sizeof(Doctors));		//Store as you input
+    cout << "Are there more doctors? (y/n): ";
+    cin >> ch;
     while(ch == 'y' || ch == 'Y')
     {
       if(i == 10)                       //No more slots available
       {                                 //for more doctors
-	cout<<"No more slots available for more doctors."<<nl;
+	cout << "No more slots available for more doctors." << nl;
 	break;
       }
-      cout<<"Enter doctor's name: ";
+      cout << "Enter doctor's name: ";
       gets(Doctor[i++]);
-      ff.write((char *)&Doctors,sizeof(Doctors));
-      cout<<"Are there more doctors? (y/n): ";
-      cin>>ch;
+      ff.write((char *) &Doctors, sizeof(Doctors));
+      cout << "Are there more doctors? (y/n): ";
+      cin >> ch;
     }
-    cout<<"All doctors initialised. Initialising the list.\n";
+    cout << "All doctors initialised. Initialising the list." << nl;
     ff.close();
-    for(int i=0;i<4;i++)
+    for(int i = 0; i < 4; i++)		//for visualisation purposes
     {
-       cout<<".";                   //for visualisation purposes
+       cout << ".";
        delay(1000);
     }
-    cout<<"Initialisation done.\n";
+    cout << "Initialisation done." << nl;
   }
 
   void showDoctors()
   {
     fstream ff;
-    ff.open("Doctors.dat",ios::in|ios::out);
+    ff.open("Doctors.dat", ios::in|ios::out);
     while(ff)
     {
-      ff.read((char *)&Doctors,sizeof(Doctors));
+      ff.read((char *) &Doctors, sizeof(Doctors));
       puts(Doctors);
-      cout<<nl;
+      cout << nl;
     }
   }
 
   bool newPatient()                     //returns true if a bed is
-  {                                     //available for new patient
-    if(!availableBeds)                  //else, return false
+  {                                     //available for new patients
+    if(!availableBeds)                  //else, returns false
     {
-      cout<<"No beds available!"<<nl;
+      cout << "No beds available!" << nl;
       return false;
     }
     else
@@ -146,7 +144,16 @@ class In_Patient_Dept : public Feedback //For In-Patients
 
 void bars()
 {
-  for(int i=0;i<80;i++) cout<<"=";
+  for(int i=0;i<80;i++) 
+    cout << "=";
+}
+
+void welcomeScreen()
+{
+  bars();
+  gotoxy(x, y);				//SPECIFY X AND Y!
+  cout << "~ WELCOME TO ABC HOSPITAL ~" << nl;
+  bars();
 }
 
 //Driver code below
@@ -154,7 +161,7 @@ void bars()
 int main()
 {
   clrscr();
-  bars();
+  welcomeScreen();
   getch();
   return 0;
 }
