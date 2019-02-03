@@ -94,8 +94,8 @@ class In_Patient_Dept : public Feedback //For In-Patients
     {
       if(i == 10)                       //No more slots available
       {                                 //for more doctors
-	cout << "No more slots available for more doctors." << nl;
-	break;
+	      cout << "No more slots available for more doctors." << nl;
+	      break;
       }
       cout << "Enter doctor's name: ";
       gets(Doctor[i++]);
@@ -173,6 +173,7 @@ class Out_Patient_Dept : public Feedback
   
 }opd;
 
+
 void bars()
 {
   for(int i=0;i<80;i++)
@@ -183,7 +184,7 @@ void welcomeScreen()
 {
   bars();
   gotoxy(39, 0);
-  cout << "~ WELCOME TO ABC HOSPITAL ~" << nl;
+  cout << "~ WELCOME TO ABC HOSPITAL ~" << nl << nl << nl;
   bars();
 }
 
@@ -192,7 +193,84 @@ void welcomeScreen()
 int main()
 {
   clrscr();
+  code1:;
   welcomeScreen();
+  int MenuChoice;
+  cout << " | Menu | " << nl;
+  cout << "1. In Patient" << nl;
+  cout << "2. Out Patient" << nl;
+  cout << nl;
+  cout << "Enter choice: ";
+  cin >> MenuChoice;
+  switch(MenuChoice)
+  {
+    case 1: code:;
+            cout << "You are in the IN-PATIENT-DEPARTMENT" << nl;
+            cout << " | Menu | " << nl;
+            cout << "1. Add doctors" << nl;
+            cout << "2. Show doctors" << nl;
+            cout << "3. Check if new patient accomodable" << nl;
+            cout << "4. Enter feedback" << nl;
+            cout << nl;
+            cout << "Enter choice: ";
+            cin >> MenuChoice;
+            switch(MenuChoice)
+            {
+              case 1: ipd.setDoctors();
+                      break;
+              case 2: ipd.showDoctors();
+                      break;
+              case 3: if(ipd.newPatient() == true)
+                      {
+                        cout << "New Patient Accomodable" << nl;
+                      }
+                      break;
+              case 4: char grade, remarks[50];
+                      cout << "Enter grade for the department: ";
+                      cin >> grade;
+                      giveGrade(grade);
+                      cout << "Enter remarks: ";
+                      gets(remarks);
+                      giveRemarks(remarks);
+                      writeRemarks();
+                      break;
+              default: cout << "Invalid choice!!" << nl;
+                       goto code;
+                       break;
+            }
+            break;
+    case 2: code2:;
+            cout << "You are in the OUT-PATIENT-DEPARTMENT" << nl;
+            cout << " | Menu | " << nl;
+            cout << "1. Add Appointment" << nl;
+            cout << "2. Enter feedback" << nl;
+            cout << nl;
+            cout << "Enter choice: ";
+            cin >> MenuChoice;
+            switch(MenuChoice)
+            {
+              case 1: ipd.addAppointment();
+                      break;
+              case 2: char grade, remarks[50];
+                      cout << "Enter grade for the department: ";
+                      cin >> grade;
+                      giveGrade(grade);
+                      cout << "Enter remarks: ";
+                      gets(remarks);
+                      giveRemarks(remarks);
+                      writeRemarks();
+                      break;
+              default: cout << "Wrong choice!!" << nl;
+                       goto code2;
+                       break;
+            }
+  }
+  char ch;
+  cout << nl;
+  cout << "Do you want to continue? (y/n): ";
+  cin >> ch;
+  if(ch == 'y' || ch == 'Y')
+    goto code1;
   getch();
   return 0;
 }
