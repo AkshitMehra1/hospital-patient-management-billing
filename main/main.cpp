@@ -94,8 +94,8 @@ class In_Patient_Dept : public Feedback //For In-Patients
     {
       if(i == 10)                       //No more slots available
       {                                 //for more doctors
-	cout << "No more slots available for more doctors." << nl;
-	break;
+	      cout << "No more slots available for more doctors." << nl;
+	      break;
       }
       cout << "Enter doctor's name: ";
       gets(Doctor[i++]);
@@ -116,7 +116,7 @@ class In_Patient_Dept : public Feedback //For In-Patients
   void showDoctors()
   {
     fstream ff;
-    ff.open("Doctors.dat", ios::in|ios::out);
+    ff.open("Doctors.dat", ios::in | ios::out);
     while(ff)
     {
       ff.read((char *) &Doctors, sizeof(Doctors));
@@ -142,16 +142,47 @@ class In_Patient_Dept : public Feedback //For In-Patients
 
 }ipd;
 
+
+class Out_Patient_Dept : public Feedback
+{
+  struct appointment
+  {
+    char name[20];
+    char sex;
+    char treatment[20];
+  };
+  appointment ap;
+  fstream ff;
+  ff.open("Appointees.dat", ios::in | ios::out | ios::app);
+  void addAppointment()
+  {
+    char ch = 'n';
+    loop:;
+    cout << "Enter appointee name: ";
+    gets(ap.name);
+    cout << "Enter gender (m/f): ";
+    cin >> ap.sex;
+    cout << "Enter treatment: ";
+    gets(ap.treatment);
+    ff.write((char *) &ap, sizeof(ap));
+    cout << "Do you want to enter more? (y/n): ";
+    cin >> ch;
+    if(ch == 'y' || ch == 'Y')
+      goto loop;
+  }
+  
+}opd;
+
 void bars()
 {
-  for(int i=0;i<80;i++) 
+  for(int i=0;i<80;i++)
     cout << "=";
 }
 
 void welcomeScreen()
 {
   bars();
-  gotoxy(x, y);				//SPECIFY X AND Y!
+  gotoxy(39, 0);
   cout << "~ WELCOME TO ABC HOSPITAL ~" << nl;
   bars();
 }
