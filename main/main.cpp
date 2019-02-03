@@ -10,7 +10,7 @@
 */
 
 #include<iostream.h>
-//for basic input/output (cin,cout)
+//for basic input/output (cin, cout)
 
 #include<fstream.h>
 //for Data file handling for doctors and patients
@@ -18,6 +18,7 @@
 #include<conio.h>
 #include<stdio.h>
 #include<string.h>
+#include<dos.h>
 #define nl '\n'
 //for smooth I/O operations
 
@@ -66,11 +67,11 @@ class Feedback
 class In_Patient_Dept : public Feedback //For In-Patients
 {
 
+ public:
+
   char Doctors[10];			//Will temporary store doctors'
   int availableBeds;                    //names in this variable
   int patientCounter;
-
- public:
 
   In_Patient_Dept()    			//Constructor for IPD Data
   {
@@ -78,42 +79,27 @@ class In_Patient_Dept : public Feedback //For In-Patients
     patientCounter = 0;
   }
 
-  void setDoctors()
-  {
-    char ch = 'y';
-    int i = 0;
-    fstream ff;
-    ff.open("Doctors.dat", ios::in|ios::out|ios::ate);
-    ff.seekg(0);
-    cout << "Enter doctor's name: ";
-    gets(Doctor[i++]);
-    ff.write((char *) &Doctors, sizeof(Doctors));		//Store as you input
-    cout << "Are there more doctors? (y/n): ";
-    cin >> ch;
-    while(ch == 'y' || ch == 'Y')
+  void showDoctors();
+  void setDoctors();
+
+  int newPatient()                      //returns true if a bed is
+  {                                     //available for new patients
+    if(!availableBeds)                  //else, returns false
     {
-      if(i == 10)                       //No more slots available
-      {                                 //for more doctors
-	      cout << "No more slots available for more doctors." << nl;
-	      break;
-      }
-      cout << "Enter doctor's name: ";
-      gets(Doctor[i++]);
-      ff.write((char *) &Doctors, sizeof(Doctors));
-      cout << "Are there more doctors? (y/n): ";
-      cin >> ch;
+      cout << "No beds available!" << nl;
+      return 0;
     }
-    cout << "All doctors initialised. Initialising the list." << nl;
-    ff.close();
-    for(int i = 0; i < 4; i++)		//for visualisation purposes
+    else
     {
-       cout << ".";
-       delay(1000);
+      ++patientCounter;
+      --availableBeds;
+      return 1;
     }
-    cout << "Initialisation done." << nl;
   }
 
-  void showDoctors()
+}ipd;
+
+void In_Patient_Dept::showDoctors()
   {
     fstream ff;
     ff.open("Doctors.dat", ios::in | ios::out);
@@ -125,54 +111,79 @@ class In_Patient_Dept : public Feedback //For In-Patients
     }
   }
 
-  bool newPatient()                     //returns true if a bed is
-  {                                     //available for new patients
-    if(!availableBeds)                  //else, returns false
+struct Docs
+{
+  char Doctor[10];
+};
+
+void In_Patient_Dept::setDoctors()
+  {
+    char ch = 'y';
+    Docs Doctors[10];
+    int i = 0;
+    fstream ff;
+    ff.open("Doctors.dat", ios::in|ios::out|ios::ate);
+    ff.seekg(0);
+    cout << "Enter doctor's name: ";
+    gets(Doctors[i++].Doctor);
+    ff.write((char *) &Doctors[i], sizeof(Doctors[i]));		//Store as you input
+    cout << "Are there more doctors? (y/n): ";
+    cin >> ch;
+    while(ch == 'y' || ch == 'Y')
     {
-      cout << "No beds available!" << nl;
-      return false;
+      if(i == 10)                       //No more slots available
+      {                                 //for more doctors
+	cout << "No more slots available for more doctors." << nl;
+	break;
+      }
+      cout << "Enter doctor's name: ";
+      gets(Doctors[i++].Doctor);
+      ff.write((char *) &Doctors, sizeof(Doctors));
+      cout << "Are there more doctors? (y/n): ";
+      cin >> ch;
     }
-    else
+    cout << "All doctors initialised. Initialising the list." << nl;
+    ff.close();
+    for(i = 0; i < 4; i++)		//for visualisation purposes
     {
-      ++patientCounter;
-      --availableBeds;
-      return true;
+       cout << ".";
+       delay(1000);
     }
+    cout << "Initialisation done." << nl;
   }
-
-}ipd;
-
 
 class Out_Patient_Dept : public Feedback
 {
+
+ public:
+
   struct appointment
   {
     char name[20];
     char sex;
     char treatment[20];
-  };
-  appointment ap;
-  fstream ff;
-  ff.open("Appointees.dat", ios::in | ios::out | ios::app);
-  void addAppointment()
-  {
-    char ch = 'n';
-    loop:;
-    cout << "Enter appointee name: ";
-    gets(ap.name);
-    cout << "Enter gender (m/f): ";
-    cin >> ap.sex;
-    cout << "Enter treatment: ";
-    gets(ap.treatment);
-    ff.write((char *) &ap, sizeof(ap));
-    cout << "Do you want to enter more? (y/n): ";
-    cin >> ch;
-    if(ch == 'y' || ch == 'Y')
-      goto loop;
-  }
-  
+  }ap;
+
+  void addAppointment();
+
 }opd;
 
+void Out_Patient_Dept::addAppointment()
+{
+  fstream ff("Appointees.dat", ios::in | ios::out | ios::app);
+  char ch = 'n';
+  loop:;
+  cout << "Enter appointee name: ";
+  gets(ap.name);
+  cout << "Enter gender (m/f): ";
+  cin >> ap.sex;
+  cout << "Enter treatment: ";
+  gets(ap.treatment);
+  ff.write((char *) &ap, sizeof(ap));
+  cout << "Do you want to enter more? (y/n): ";
+  cin >> ch;
+  goto loop;
+}
 
 void bars()
 {
@@ -183,9 +194,9 @@ void bars()
 void welcomeScreen()
 {
   bars();
-  gotoxy(39, 0);
-  cout << "~ WELCOME TO ABC HOSPITAL ~" << nl << nl << nl;
+  cout << "                          ~ WELCOME TO ABC HOSPITAL ~" << nl;
   bars();
+  cout << nl;
 }
 
 //Driver code below
@@ -205,65 +216,63 @@ int main()
   switch(MenuChoice)
   {
     case 1: code:;
-            cout << "You are in the IN-PATIENT-DEPARTMENT" << nl;
-            cout << " | Menu | " << nl;
-            cout << "1. Add doctors" << nl;
-            cout << "2. Show doctors" << nl;
-            cout << "3. Check if new patient accomodable" << nl;
-            cout << "4. Enter feedback" << nl;
-            cout << nl;
-            cout << "Enter choice: ";
-            cin >> MenuChoice;
-            switch(MenuChoice)
-            {
-              case 1: ipd.setDoctors();
-                      break;
-              case 2: ipd.showDoctors();
-                      break;
-              case 3: if(ipd.newPatient() == true)
-                      {
-                        cout << "New Patient Accomodable" << nl;
-                      }
-                      break;
-              case 4: char grade, remarks[50];
-                      cout << "Enter grade for the department: ";
-                      cin >> grade;
-                      giveGrade(grade);
-                      cout << "Enter remarks: ";
-                      gets(remarks);
-                      giveRemarks(remarks);
-                      writeRemarks();
-                      break;
-              default: cout << "Invalid choice!!" << nl;
-                       goto code;
-                       break;
-            }
-            break;
+	    cout << "You are in the IN-PATIENT-DEPARTMENT" << nl;
+	    cout << " | Menu | " << nl;
+	    cout << "1. Add doctors" << nl;
+	    cout << "2. Show doctors" << nl;
+	    cout << "3. Check if new patient accomodable" << nl;
+	    cout << "4. Enter feedback" << nl;
+	    cout << nl;
+	    cout << "Enter choice: ";
+	    cin >> MenuChoice;
+	    switch(MenuChoice)
+	    {
+	      case 1: ipd.setDoctors();
+		      break;
+	      case 2: ipd.showDoctors();
+		      break;
+	      case 3: if(ipd.newPatient() == 1)
+		      {
+			cout << "New Patient Accomodable" << nl;
+		      }
+		      break;
+	      case 4: char grade, remarks[50];
+		      cout << "Enter grade for the department: ";
+		      cin >> grade;
+		      ipd.giveGrade(grade);
+		      cout << "Enter remarks: ";
+		      gets(remarks);
+		      ipd.giveRemarks(remarks);
+		      ipd.writeRemarks();
+		      break;
+	      default: cout << "Invalid choice!!" << nl;
+		       goto code;
+	    }
+	    break;
     case 2: code2:;
-            cout << "You are in the OUT-PATIENT-DEPARTMENT" << nl;
-            cout << " | Menu | " << nl;
-            cout << "1. Add Appointment" << nl;
-            cout << "2. Enter feedback" << nl;
-            cout << nl;
-            cout << "Enter choice: ";
-            cin >> MenuChoice;
-            switch(MenuChoice)
-            {
-              case 1: ipd.addAppointment();
-                      break;
-              case 2: char grade, remarks[50];
-                      cout << "Enter grade for the department: ";
-                      cin >> grade;
-                      giveGrade(grade);
-                      cout << "Enter remarks: ";
-                      gets(remarks);
-                      giveRemarks(remarks);
-                      writeRemarks();
-                      break;
-              default: cout << "Wrong choice!!" << nl;
-                       goto code2;
-                       break;
-            }
+	    cout << "You are in the OUT-PATIENT-DEPARTMENT" << nl;
+	    cout << " | Menu | " << nl;
+	    cout << "1. Add Appointment" << nl;
+	    cout << "2. Enter feedback" << nl;
+	    cout << nl;
+	    cout << "Enter choice: ";
+	    cin >> MenuChoice;
+	    switch(MenuChoice)
+	    {
+	      case 1: opd.addAppointment();
+		      break;
+	      case 2: char grade, remarks[50];
+		      cout << "Enter grade for the department: ";
+		      cin >> grade;
+		      opd.giveGrade(grade);
+		      cout << "Enter remarks: ";
+		      gets(remarks);
+		      opd.giveRemarks(remarks);
+		      opd.writeRemarks();
+		      break;
+	      default: cout << "Wrong choice!!" << nl;
+		       goto code;
+	    }
   }
   char ch;
   cout << nl;
