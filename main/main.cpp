@@ -94,8 +94,8 @@ class In_Patient_Dept : public Feedback //For In-Patients
     {
       if(i == 10)                       //No more slots available
       {                                 //for more doctors
-	      cout << "No more slots available for more doctors." << nl;
-	      break;
+	cout << "No more slots available for more doctors." << nl;
+	break;
       }
       cout << "Enter doctor's name: ";
       gets(Doctor[i++]);
