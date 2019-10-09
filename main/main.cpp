@@ -22,6 +22,11 @@
 #define nl '\n'
 //for smooth I/O operations
 
+void printx()
+{
+  cout << "x" << nl;
+}
+
 class Feedback
 {
 
