@@ -33,11 +33,14 @@ class Feedback
  public:
 
   char Grade;                           //For additional remarks on
+	
+	
   char Remarks[50];	        	//staff and doctors
   //void initGrade();
   //void giveRemarks(char []);
   //void giveGrade(char);
 
+	
   Feedback()                      	//Set initial grade to 'A'
   {
     Grade = 'A';
@@ -56,17 +59,20 @@ class Feedback
     ff.write((char *) &Remarks, sizeof(Remarks));
   }
 
+	
   void giveGrade(char g)
   {
     Grade = g;
   }
 
+	
   void showGrade()
   {
     cout << Grade << nl;
   }
 
 };
+
 
 
 class In_Patient_Dept : public Feedback //For In-Patients
@@ -78,15 +84,18 @@ class In_Patient_Dept : public Feedback //For In-Patients
   int availableBeds;                    //names in this variable
   int patientCounter;
 
+	
   In_Patient_Dept()    			//Constructor for IPD Data
   {
     availableBeds =  50;
     patientCounter = 0;
   }
 
+	
   void showDoctors();
   void setDoctors();
 
+	
   int newPatient()                      //returns true if a bed is
   {                                     //available for new patients
     if(!availableBeds)                  //else, returns false
@@ -104,6 +113,7 @@ class In_Patient_Dept : public Feedback //For In-Patients
 
 }ipd;
 
+
 void In_Patient_Dept::showDoctors()
   {
     fstream ff;
@@ -116,10 +126,12 @@ void In_Patient_Dept::showDoctors()
     }
   }
 
+
 struct Docs
 {
   char Doctor[10];
 };
+
 
 void In_Patient_Dept::setDoctors()
   {
@@ -157,6 +169,7 @@ void In_Patient_Dept::setDoctors()
     cout << "Initialisation done." << nl;
   }
 
+
 class Out_Patient_Dept : public Feedback
 {
 
@@ -172,6 +185,7 @@ class Out_Patient_Dept : public Feedback
   void addAppointment();
 
 }opd;
+
 
 void Out_Patient_Dept::addAppointment()
 {
